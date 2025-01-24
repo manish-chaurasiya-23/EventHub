@@ -6,81 +6,98 @@
 //
 
 import SwiftUI
-import CoreData
+import PhotosUI
+import MapKit
+import CoreLocation
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
+    
+    @State private var isImageUploaded: Bool = false
+    @State private var bannerImage: UIImage?
+    @State private var photoPickerItem: PhotosPickerItem?
+    @State var selectedOption: String?
+    @State private var eventTitleText: String = ""
+    @State private var startDate = Date()
+    @State private var endDate = Date().addingTimeInterval(3600)
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    )
+    @State private var selectedLocation: CLLocationCoordinate2D?
+    @State private var isMapPresented = false
+    @State private var descriptionText: String = ""
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
+            ScrollView {
+                VStack {
+                    BannerView(bannerImage: $bannerImage, photoPickerItem: $photoPickerItem, isImageUploaded: $isImageUploaded)
+                    CommunitySelectionView(selectedOption: $selectedOption)
+                    EventTitleView(textInput: $eventTitleText)
+                    EventDateTimeSection(startDate: $startDate, endDate: $endDate)
+                    LocationSelectionView(
+                        isMapPresented: $isMapPresented,
+                        selectedLocation: $selectedLocation,
+                        region: $region
+                    )
+                    DescriptionInputView(description: $descriptionText)
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                .navigationTitle("Create new event")
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
+struct CommunitySelectionView: View {
+    @Binding var selectedOption: String?
+
+    var body: some View {
+        VStack {
+            Text("Select Community")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            DropDownView(selectedOption: $selectedOption)
+        }
+        .padding()
+    }
+}
+
+
+struct EventTitleView: View {
+    @Binding var textInput: String
+
+    var body: some View {
+        VStack {
+            Text("Event Title*")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            TextField("", text: $textInput)
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 40).stroke(Color.gray, lineWidth: 1))
+        }
+        .padding()
+    }
+}
+
+struct DescriptionInputView: View {
+    @Binding var description: String
+
+    var body: some View {
+        VStack {
+            HStack(spacing: 8) {
+                Image(systemName: "heart.fill")
+                VStack(alignment: .leading) {
+                    Text("Add Description*")
+                    TextField("We can't wait for you to join us and be part of our community :)", text: $description)
+                        .multilineTextAlignment(.leading)
+                }
+                Image(systemName: "chevron.right")
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding()
+    }
+}
 
 #Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    ContentView()
 }
