@@ -11,8 +11,8 @@ import CoreLocation
 
 struct LocationSelectionView: View {
     
-    @State var locationFirstLine: String? = nil
-    @State var locationSecondLine: String? = nil
+    @Binding var locationFirstLine: String?
+    @Binding var locationSecondLine: String?
     @Binding var isMapPresented: Bool
     @Binding var selectedLocation: CLLocationCoordinate2D?
     @Binding var region: MKCoordinateRegion
@@ -20,8 +20,13 @@ struct LocationSelectionView: View {
     var body: some View {
         VStack {
             HStack {
-                Image(systemName: "heart.fill")
-                    .foregroundColor(.red)
+                Circle()
+                     .fill(Color.gray)
+                     .frame(width: 30, height: 30)
+                     .overlay {
+                         Image(systemName: "mappin.and.ellipse")
+                             .foregroundColor(.white)
+                     }
                 if let locationFirstLine = locationFirstLine, let locationSecondLine = locationSecondLine {
                     VStack(alignment: .leading) {
                         Text(locationFirstLine)

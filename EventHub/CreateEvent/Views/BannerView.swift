@@ -9,6 +9,7 @@ import PhotosUI
 
 struct BannerView: View {
     @Binding var bannerImage: UIImage?
+    @Binding var imageData: Data?
     @Binding var photoPickerItem: PhotosPickerItem?
     @Binding var isImageUploaded: Bool
 
@@ -39,6 +40,7 @@ struct BannerView: View {
                             if let photoPickerItem = newItem,
                                let data = try? await photoPickerItem.loadTransferable(type: Data.self),
                                let image = UIImage(data: data) {
+                                imageData = data
                                 bannerImage = image
                                 isImageUploaded = true
                             }
