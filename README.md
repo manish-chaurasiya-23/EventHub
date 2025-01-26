@@ -1,4 +1,4 @@
-# MatchMate App
+# EventHub App
 
 This is an iOS app that allows users to create and list events, and the app should store and display their decisions persistently, even in
 offline mode.
