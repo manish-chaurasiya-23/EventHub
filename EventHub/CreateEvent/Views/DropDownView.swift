@@ -11,7 +11,7 @@ struct DropDownView: View {
     
     @Binding  var selectedOption: String?
     @State private var showDropdown: Bool = false
-    let options = ["Option 1", "Option 2", "Option 3", "Option 4"]
+    let options = ["Sports Club", "Music Band", "Tech Enthusiasts", "Art Community"]
     
     var body: some View {
         VStack {

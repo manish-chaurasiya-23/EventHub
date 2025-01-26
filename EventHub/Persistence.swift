@@ -5,13 +5,6 @@
 //  Created by Manish Kumar on 23/01/25.
 //
 
-//
-//  Persistence.swift
-//  MatchMate
-//
-//  Created by Manish Kumar on 23/12/24.
-//
-
 import CoreData
 
 struct PersistenceController {
@@ -48,8 +41,7 @@ struct PersistenceController {
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
-
-    // Delete all events (unchanged)
+    
     func deleteAllEvents() {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Event.fetchRequest()
         let context = PersistenceController.shared.container.viewContext

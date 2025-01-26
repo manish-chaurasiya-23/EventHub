@@ -24,7 +24,6 @@ class CommnunityVM: ObservableObject {
     }
     
     func saveData() {
-
         do {
             try context.save()
             print("Data saved successfully!")

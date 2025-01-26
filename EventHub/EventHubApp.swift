@@ -25,15 +25,15 @@ struct EventHubApp: App {
                             .cornerRadius(10)
                     }
                     
-                    NavigationLink(destination: CreateCommunityView(context: persistenceController.container.viewContext)) {
-                        Text("Create Community View")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                    }
+//                    NavigationLink(destination: CreateCommunityView(context: persistenceController.container.viewContext)) {
+//                        Text("Create Community View")
+//                            .font(.headline)
+//                            .foregroundColor(.white)
+//                            .padding()
+//                            .frame(maxWidth: .infinity)
+//                            .background(Color.blue)
+//                            .cornerRadius(10)
+//                    }
 
                     NavigationLink(destination: EventListingScreen(context: persistenceController.container.viewContext)) {
                         Text("Event Listing Screen")
