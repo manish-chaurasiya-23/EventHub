@@ -21,7 +21,7 @@ struct EventListingScreen: View {
                 VStack {
                     Text("Delhi NCR")
                         .font(.system(size: 20))
-                    Text("Elcome to the Tribe!")
+                    Text("Welcome to the Tribe!")
                         .font(.system(size: 16))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
