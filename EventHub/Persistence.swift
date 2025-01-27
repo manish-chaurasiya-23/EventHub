@@ -54,7 +54,6 @@ struct PersistenceController {
                     context.delete(personToDelete)
                 }
             }
-            
             try context.save()
         } catch {
             print("Failed to delete all persons: \(error.localizedDescription)")

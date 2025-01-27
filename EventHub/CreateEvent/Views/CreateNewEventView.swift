@@ -26,7 +26,7 @@ struct CreateNewEventView: View {
             ScrollView {
                 VStack {
                     BannerView(bannerImage: $viewModel.bannerImage, imageData: $viewModel.imageData, photoPickerItem: $viewModel.photoPickerItem, isImageUploaded: $viewModel.isImageUploaded)
-                    CommunitySelectionView(selectedOption: $viewModel.selectedCommunity)
+                    CommunitySelectionView(selectedOption: $viewModel.selectedCommunity, commuinities: $viewModel.communities)
                     EventTitleView(textInput: $viewModel.eventTitleText)
                     EventDateTimeSection(startDate: $viewModel.startDate, endDate: $viewModel.endDate)
                     LocationSelectionView(
@@ -40,8 +40,10 @@ struct CreateNewEventView: View {
                     Button {
                         if !viewModel.validateFields() {
                             viewModel.showAlert = true
+                        } else {
+                            viewModel.saveData()
+                            presentationMode.wrappedValue.dismiss()
                         }
-                        presentationMode.wrappedValue.dismiss()
                     } label : {
                         Text("Submit")
                             .font(.headline)
@@ -69,12 +71,13 @@ struct CreateNewEventView: View {
 
 struct CommunitySelectionView: View {
     @Binding var selectedOption: String?
+    @Binding var commuinities: [Community]
 
     var body: some View {
         VStack {
             Text("Select Community")
                 .frame(maxWidth: .infinity, alignment: .leading)
-            DropDownView(selectedOption: $selectedOption)
+            DropDownView(selectedOption: $selectedOption, commuinities: $commuinities)
         }
         .padding()
     }

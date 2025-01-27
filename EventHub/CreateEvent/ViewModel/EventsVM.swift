@@ -41,6 +41,7 @@ class EventViewModel: ObservableObject {
     @Published var isMapPresented = false
 
     @Published var events: [Event] = []
+    @Published var communities: [Community] = []
     
     @Published  var showAlert = false
     @Published  var alertMessage = ""
@@ -48,10 +49,14 @@ class EventViewModel: ObservableObject {
         
     init(context: NSManagedObjectContext) {
         self.context = context
-        fetchEvents()
+        Task {
+            await fetchCommunities()
+            await fetchEvents()
+        }
     }
     
-    func fetchEvents() {
+    @MainActor
+    func fetchEvents() async {
         let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
         
         // Add sort descriptor for eventStartDate in ascending order
@@ -60,11 +65,13 @@ class EventViewModel: ObservableObject {
         
         // Create a predicate to fetch only events with eventStartDate in the future
         let now = Date()
-        let predicate = NSPredicate(format: "eventStartDate >= %@", now as CVarArg)
-        fetchRequest.predicate = predicate
+        fetchRequest.predicate = NSPredicate(format: "eventStartDate >= %@", now as NSDate)
         
         do {
-            events = try context.fetch(fetchRequest)
+            let fetchedEvents = try await context.perform {
+                try self.context.fetch(fetchRequest)
+            }
+            events = fetchedEvents // Update the `events` property if it's @Published or a similar property
         } catch {
             print("Error fetching events: \(error.localizedDescription)")
         }
@@ -144,6 +151,23 @@ class EventViewModel: ObservableObject {
             return false
         }
         return true
+    }
+    
+    @MainActor
+    func fetchCommunities() async {
+        let fetchRequest: NSFetchRequest<Community> = Community.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "communityName", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        do {
+            let fetchedCommunities = try await context.perform {
+                try self.context.fetch(fetchRequest)
+            }
+            communities = fetchedCommunities // Update the published property
+        } catch {
+            alertMessage = "Error fetching communities: \(error.localizedDescription)"
+            showAlert = true
+        }
     }
 
 }

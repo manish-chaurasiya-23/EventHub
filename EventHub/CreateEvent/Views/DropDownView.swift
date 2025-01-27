@@ -10,8 +10,8 @@ import SwiftUI
 struct DropDownView: View {
     
     @Binding  var selectedOption: String?
+    @Binding var commuinities: [Community]
     @State private var showDropdown: Bool = false
-    let options = ["Sports Club", "Music Band", "Tech Enthusiasts", "Art Community"]
     
     var body: some View {
         VStack {
@@ -36,14 +36,14 @@ struct DropDownView: View {
             // Dropdown
             if showDropdown {
                 VStack(spacing: 0) {
-                    ForEach(options, id: \.self) { option in
+                    ForEach(commuinities, id: \.self) { community in
                         Button {
-                            selectedOption = option
+                            selectedOption = community.communityName
                             withAnimation {
                                 showDropdown = false
                             }
                         } label: {
-                            Text(option)
+                            Text(community.communityName)
                                 .padding()
                                 .foregroundColor(.black)
                                 .frame(maxWidth: .infinity, alignment: .leading)

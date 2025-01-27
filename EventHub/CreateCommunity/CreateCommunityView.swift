@@ -12,6 +12,8 @@ import CoreData
 
 struct CreateCommunityView: View {
     
+    @Environment(\.presentationMode) var presentationMode
+    
     @StateObject private var viewModel: CommnunityVM
         
     init(context: NSManagedObjectContext) {
@@ -33,7 +35,12 @@ struct CreateCommunityView: View {
                     .background(RoundedRectangle(cornerRadius: 40).stroke(Color.gray, lineWidth: 1))
             }
             Button {
-                viewModel.saveData()
+                if !viewModel.validateFields() {
+                    viewModel.showAlert = true
+                } else {
+                    viewModel.saveData()
+                    presentationMode.wrappedValue.dismiss()
+                }
             } label : {
                 Text("Submit")
                     .font(.headline)
