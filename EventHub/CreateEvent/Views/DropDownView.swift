@@ -43,7 +43,7 @@ struct DropDownView: View {
                                 showDropdown = false
                             }
                         } label: {
-                            Text(community.communityName)
+                            Text(community.communityName ?? "")
                                 .padding()
                                 .foregroundColor(.black)
                                 .frame(maxWidth: .infinity, alignment: .leading)
