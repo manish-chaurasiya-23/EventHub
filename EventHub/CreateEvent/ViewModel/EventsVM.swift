@@ -159,6 +159,29 @@ class EventViewModel: ObservableObject {
             showAlert = true
         }
     }
+    
+    @MainActor
+    func fetchCommunity(named name: String) -> Community? {
+        let fetchRequest: NSFetchRequest<Community> = Community.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "communityName", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        // Adding a predicate to filter by community name
+        fetchRequest.predicate = NSPredicate(format: "communityName == %@", name)
+        
+        do {
+            // Perform the fetch synchronously
+            let fetchedCommunities = try context.fetch(fetchRequest)
+            
+            // Return the first community that matches the given name, or nil if not found
+            return fetchedCommunities.first
+        } catch {
+            // Handle error if needed
+            print("Error fetching community: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
 
 }
 

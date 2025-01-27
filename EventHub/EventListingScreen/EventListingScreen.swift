@@ -114,7 +114,9 @@ struct TestingView: View {
                         spacing: 16
                     ) {
                         ForEach(events, id: \.self) { event in
-                            CardView(event: event)
+                            if let community = fetchCommunity(named: event.eventCommunity ?? "") {
+                                CardView(event: event, community: community)
+                            }
                         }
                         Spacer(minLength: 0)
                     }
@@ -156,11 +158,17 @@ struct TestingView: View {
             Spacer()
         }
     }
+    
+    @MainActor
+    func fetchCommunity(named name: String) -> Community? {
+        return communities.first { $0.communityName == name }
+    }
 }
 
 struct CardView: View {
     
     let event: Event
+    let community: Community
     
     var body: some View {
         VStack {
@@ -180,13 +188,25 @@ struct CardView: View {
             .frame(maxWidth: .infinity, maxHeight: 100)
             
             HStack {
-                Circle()
-                    .fill(Color.gray)
-                    .frame(width: 30, height: 30)
-                    .overlay {
-                        Image(systemName: "heart.fill")
-                            .foregroundColor(.white)
-                    }
+                if let data = community.logoImage, let image = UIImage(data: data) {
+                    Circle()
+                        .fill(Color.gray)
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .clipShape(Circle())
+                        )
+                } else {
+                    Circle()
+                        .fill(Color.gray)
+                        .frame(width: 30, height: 30)
+                        .overlay {
+                            Image(systemName: "heart.fill")
+                                .foregroundColor(.white)
+                        }
+                }
                 Text(event.eventCommunity ?? "")
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -216,6 +236,7 @@ struct CardView: View {
         .padding()
         .cornerRadius(8)
         .shadow(radius: 5)
+        .background(Color.pink)
         .frame(maxWidth: .infinity, minHeight: 100)
     }
     
