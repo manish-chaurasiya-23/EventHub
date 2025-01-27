@@ -55,13 +55,11 @@ struct CreateNewEventView: View {
                     }
                     .padding()
                 }
-                .alert(isPresented: $viewModel.showAlert) {
-                    Alert(
-                        title: Text("Validation Failed"),
-                        message: Text(viewModel.alertMessage),
-                        dismissButton: .default(Text("OK"))
-                    )
-                }
+                .alert(viewModel.alertMessage, isPresented: $viewModel.showAlert, actions: {
+                    Button("OK") {
+                        viewModel.showAlert = false
+                    }
+                })
                 .navigationTitle("Create new event")
                 .navigationBarTitleDisplayMode(.inline)
             }

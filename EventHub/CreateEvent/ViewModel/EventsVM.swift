@@ -131,16 +131,6 @@ class EventViewModel: ObservableObject {
             return false
         }
         
-        if ((locationFirstLine?.isEmpty) != nil) {
-            alertMessage = "Location first line is required."
-            return false
-        }
-        
-        if ((selectedCommunity?.isEmpty) != nil) {
-            alertMessage = "Community selection is required."
-            return false
-        }
-        
         if imageData == nil {
             alertMessage = "Banner image is required."
             return false
