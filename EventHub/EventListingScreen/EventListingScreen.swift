@@ -34,7 +34,7 @@ struct EventListingScreen: View {
                             .foregroundColor(.white)
                     }
             }
-            TestingView(events: $viewModel.events)
+            TestingView(events: $viewModel.events, communities: $viewModel.communities)
 
         }
         .padding()
@@ -99,6 +99,7 @@ struct TestingView: View {
     
     @State private var segmentSelection: SegmentItem = .events
     @Binding var events: [Event]
+    @Binding var communities: [Community]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -118,6 +119,37 @@ struct TestingView: View {
                         Spacer(minLength: 0)
                     }
                     .padding(.top, 0)
+                }
+                .padding(.top, 0)
+            } else {
+                ScrollView {
+                    VStack {
+                        ForEach($communities, id: \.self) { $community in
+                            HStack {
+                                if let data = community.logoImage, let image = UIImage(data: data) {
+                                    Circle()
+                                        .fill(Color.gray)
+                                        .frame(width: 30, height: 30)
+                                        .overlay(
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .clipShape(Circle())
+                                        )
+                                } else {
+                                    Image(systemName: "heart.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 30, height: 30)
+                                        .foregroundColor(.gray)
+                                }
+                                Text(community.communityName ?? "")
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        Spacer(minLength: 0)
+                    }
                 }
                 .padding(.top, 0)
             }
